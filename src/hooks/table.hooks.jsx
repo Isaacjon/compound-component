@@ -1,5 +1,11 @@
 import React, { useState } from "react";
 
+//Function which concat all functions together
+const callFnsInSequence =
+  (...fns) =>
+  (...args) =>
+    fns.forEach((fn) => fn && fn(...args));
+
 export const useTable = (data = []) => {
   const [currentPage, setCurrentPage] = useState(1);
   const recordsPerPage = 5;
@@ -21,12 +27,34 @@ export const useTable = (data = []) => {
     setCurrentPage(pageNum);
   };
 
+  const getPrevButtonProps = ({ onClick, ...otherProps }) => ({
+    onClick: callFnsInSequence(prevPage, onClick),
+    ...otherProps,
+  });
+
+  const getNextButtonProps = ({ onClick, ...otherProps }) => ({
+    onClick: callFnsInSequence(nextPage, onClick),
+    ...otherProps,
+  });
+
+  const getIndexButtonProps = ({ onClick, ...otherProps }) => ({
+    onClick: callFnsInSequence(changePage, onClick),
+    ...otherProps,
+  });
+
+  const getThProps = ({ ...props }) => ({
+    ...props,
+  });
+
   return {
     currentPage,
     records,
     numbers,
-    nextPage,
-    prevPage,
-    changePage,
+
+    getNextButtonProps,
+    getPrevButtonProps,
+    getIndexButtonProps,
+
+    getThProps,
   };
 };

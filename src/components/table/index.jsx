@@ -8,9 +8,12 @@ export const TableContainer = ({ tableData }) => {
     currentPage,
     records = [],
     numbers = [],
-    prevPage = () => {},
-    nextPage = () => {},
-    changePage = () => {},
+
+    getPrevButtonProps = () => {},
+    getNextButtonProps = () => {},
+    getIndexButtonProps = () => {},
+
+    getThProps = () => {},
   } = useTable(tableData);
 
   return (
@@ -18,10 +21,14 @@ export const TableContainer = ({ tableData }) => {
       <CTable>
         <CTable.Thead>
           <CTable.Tr>
-            <CTable.Th className="header">No</CTable.Th>
-            <CTable.Th className="header">Name</CTable.Th>
-            <CTable.Th className="header">Phone</CTable.Th>
-            <CTable.Th className="header">Email</CTable.Th>
+            <CTable.Th {...getThProps({ className: "header" })}>No</CTable.Th>
+            <CTable.Th {...getThProps({ className: "header" })}>Name</CTable.Th>
+            <CTable.Th {...getThProps({ className: "header" })}>
+              Phone
+            </CTable.Th>
+            <CTable.Th {...getThProps({ className: "header" })}>
+              Email
+            </CTable.Th>
           </CTable.Tr>
         </CTable.Thead>
         <CTable.Tbody>
@@ -39,14 +46,26 @@ export const TableContainer = ({ tableData }) => {
       </CTable>
 
       <TablePagination>
-        <TablePagination.PrevButton onClick={prevPage} />
-        <TablePagination.IndexButton
-          label={currentPage}
-          onClick={changePage}
-          numbers={numbers}
-          currentPage={currentPage}
+        <TablePagination.PrevButton
+          {...getPrevButtonProps({
+            label: "PPREV",
+            className: currentPage === 1 ? "disabled" : "",
+          })}
         />
-        <TablePagination.NextButton onClick={nextPage} label="NEXT" />
+        <TablePagination.IndexButton
+          {...getIndexButtonProps({
+            label: currentPage,
+            currentPage,
+            numbers,
+            onClick: () => console.log("currentPage", currentPage),
+          })}
+        />
+        <TablePagination.NextButton
+          {...getNextButtonProps({
+            label: "NNEXT",
+            className: currentPage === numbers.length ? "disabled" : "",
+          })}
+        />
       </TablePagination>
     </div>
   );
